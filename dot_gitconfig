@@ -3,13 +3,15 @@
 	attributesfile = ~/.gitattributes # dotfiles hardlinked
 [merge]
 	conflictstyle = diff3
-	tool = kdiff3
-	guitool = kdiff3
+	tool = vscode
+	guitool = vscode
 [mergetool]
 	prompt = false
+[mergetool "vscode"]
+	cmd = code --wait $MERGED
 [diff]
 	tool = vimdiff
-	guitool = kdiff3
+	guitool = vscode
 [push]
 	default = simple # Push a branch, assuming remote/local names match, to "origin"
 [rerere]
