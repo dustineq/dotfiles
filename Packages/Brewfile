@@ -1,9 +1,17 @@
+# Purchased
+brew "beyond-compare"
+brew "keepassxc"
+
+
 # Enable the cask-fonts Homebrew repository.
 tap "homebrew/cask-fonts"
 
 tap "jandedobbeleer/oh-my-posh"
 brew "oh-my-posh"
 
+brew "yq"
+brew "jq"
+brew "go"
 brew "tree" # tree is useful for displaying file listings as a tree.
 
 brew "git"
@@ -13,22 +21,35 @@ brew "vim"
 brew "editorconfig"
 brew "ripgrep"
 cask "powershell"
-brew "figet"
+brew "figlet"
 brew "fzf"
 brew "volta"
 brew "plantuml" # Plant UML installation for generating pretty graphs.
 brew "grip" # Grip allows for rendering Github flavored Markdown
 brew "eslint" # Eslint provides linting for EMCAScript/JavaScript.
 brew "yamllint" # Yamllint provides yaml file linting.
-
+brew "jq"
 cask "kitty" # Kitty terminal
+brew "zoxide"
+brew "awscli"
+brew "gnupg"
 
 # neovim core
 brew "neovim"
-tap "equalsraf/neovim-qt"
-# cask "macvim"
-cask "neovim-qt"
+# cask "macvim"e
+# tap "equalsraf/neovim-qt"
+brew "neovim-qt"
 cask "vimr"
+brew "docker"
+brew "docker-completion"
+
+# k8s
+brew "stern"
+brew "k9s"
+brew "kustomize"
+brew "kubernetes-cli"
+brew "kubectx"
+brew "pwsh"
 
 # Fonts
 cask "font-hack"

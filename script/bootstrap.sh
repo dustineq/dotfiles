@@ -62,7 +62,8 @@ warn() { printf "WARN: %s\n" "$1"; }
 # Transform templates
 copyTemplate () {
 	if [ $force ]; then
-		cp "$1" "$2" --force
+		rm "$1"
+		cp "$1" "$2"
 	elif [ ! -f "$2" ]; then
 		log "Copying Template: $2"; 
 		if [ ! $whatif ]; then cp "$1" "$2"; fi
@@ -70,13 +71,16 @@ copyTemplate () {
 }
 
 handleLink () {
+	log "Handling link from $1 to $2"
+
 	l=$1 # link
 	f=$2 # pointing to target
-	lv=$(readlink -m "$l") # symlink value
+	lv=$(readlink "$l") # symlink value
 
 	if [ $force ]; then
-		ln -s "$f" "$l" --force
-	elif [ -L "$l" ] && [ "$lv" = "$(readlink -m "$f")" ]; then
+		rm "$l"
+		ln -s "$f" "$l"
+	elif [ -L "$l" ] && [ "$lv" = "$f" ]; then
 		info "No Changes to symlink $l"
 	elif [ -L "$l" ] && [ "$lv" != "$f" ]; then
 		warn "Unexpected value for symlink: $l"
@@ -104,21 +108,25 @@ f="$dotfiles/git/.gitconfig_os_$variation"
 l="$dotfiles/dot_gitconfig_os"
 handleLink "$l" "$f"
 
+handleLink "$HOME/.dotfiles" "$dotfiles"
+handleLink "$HOME/.config/kitty" "$dotfiles/.config/kitty"
+handleLink "$HOME/.config/nvim" "$dotfiles/.config/nvim"
+handleLink "$HOME/.config/powershell" "$dotfiles/.config/powershell"
+handleLink "$HOME/.local/share/powershell/Scripts" "$dotfiles/PSScripts"
+
 # Item list to be symlinked.
-for f in "$dotfiles/." "$dotfiles"/dot_* "$dotfiles"/.config/* "$dotfiles/PSScripts"
+#find "$dotfiles" -name 'dot_*' -o -path "$dotfiles/.config/*" -o -path "$dotfiles/PSScripts" -maxdepth 2 | while read -r f; do
+for f in "$dotfiles"/dot_*
 do
 	# Get item information.
-	r=$(realpath -s -q --relative-to="$dotfiles" "$f") # don't expand symlinks, quiet
+	r=$(readlink -f "$f")
+	r=$(basename -- "$r")
 	r=$(echo "$r" | sed "s/dot_/./") # transform dot_ to .
-	l="$HOME/$r" # symlink file path
 
 	# Transform items
-	if [ "$f" = "$dotfiles/." ]; then f="$dotfiles"; l="$HOME/.dotfiles"; fi # this repo to $HOME/.dotfiles
-	if [ "$f" = "$dotfiles/PSScripts" ]; then # Symlink entire folder to easily capture ad-hoc scripts.
-		[ ! -d "$HOME/.local/share/powershell" ] && mkdir -p "$HOME/.local/share/powershell"; # non-standard xdc path?
-		l="$HOME/.local/share/powershell/Scripts"
-	fi
+    l="$HOME/$r" # symlink file path
 
+	echo "Handling link from $l to $f"
 	handleLink "$l" "$f"
 done
 

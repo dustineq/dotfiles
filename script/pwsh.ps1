@@ -26,10 +26,13 @@ function Add-WindowsDefenderExclude {
 	}
 }
 
-Set-PSRepository -Name 'PSGallery' -InstallationPolicy 'Trusted'
+$ModuleRepository = 'PSGallery'
+$ModuleScope = 'CurrentUser'
+
+Set-PSRepository -Name $ModuleRepository -InstallationPolicy 'Trusted'
 
 $modulesToManage = @('posh-git', 'PSFzf', 'PSScriptAnalyzer', 'PSReadLine', 'Terminal-Icons', 'PowerShellForGitHub')
-if (Test-OSPlatform -Include @('Unix', 'Darwin')) {
+if ($IsLinux -or $IsMacOS) {
 	$modulesToManage += 'Microsoft.PowerShell.UnixCompleters' # PSUnixUtilCompleters
 }
 
