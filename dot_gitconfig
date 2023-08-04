@@ -177,6 +177,13 @@
     # Open a Bitbucket Pull Request for the current branch
     new-bitbucket-pr = "!open \"$(git bitbucket-pr-uri)/new?source=$(git branch-name)\""
 
+    # Amend the last commit with a signature
+    amend-sign = "!git commit --allow-empty --amend --no-edit -S"
+
+    # Rebase and sign a branch.
+    # git rebase-and-sign origin/main
+    rebase-sign = "!git rebase --exec \"git amend-sign\""
+
 	#############
 	# Aliases
 	#############
