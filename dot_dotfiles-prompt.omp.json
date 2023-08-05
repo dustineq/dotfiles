@@ -74,6 +74,14 @@
           "type": "az"
         },
         {
+          "type": "kubectl",
+          "style": "powerline",
+          "powerline_symbol": "\ue0b0",
+          "foreground": "#000000",
+          "background": "#ebcc34",
+          "template": " \udb84\udcfe {{.Context}}{{if .Namespace}}:{{.Namespace}}{{end}} "
+        },
+        {
           "background": "#DBC239",
           "foreground": "#060606",
           "powerline_symbol": "\ue0b0",

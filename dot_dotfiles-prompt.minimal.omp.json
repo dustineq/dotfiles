@@ -87,6 +87,13 @@
           "type": "az"
         },
         {
+          "type": "kubectl",
+          "style": "plain",
+          "foreground": "#000000",
+          "background": "#ebcc34",
+          "template": " K8:{{.Context}}{{if .Namespace}}:{{.Namespace}}{{end}} "
+        },
+        {
           "foreground": "#6997C9",
           "properties": {
             "time_format": "15:04:05"
