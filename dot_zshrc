@@ -4,7 +4,14 @@ bindkey -e # emacs mode in zsh
 
 setopt no_beep
 setopt histignorealldups
-setopt sharehistory
+setopt EXTENDED_HISTORY          # Write the history file in the ':start:elapsed;command' format.
+setopt HIST_EXPIRE_DUPS_FIRST    # Expire a duplicate event first when trimming history.
+setopt HIST_FIND_NO_DUPS         # Do not display a previously found event.
+setopt HIST_IGNORE_ALL_DUPS      # Delete an old recorded event if a new event is a duplicate.
+setopt HIST_IGNORE_DUPS          # Do not record an event that was just recorded again.
+setopt HIST_IGNORE_SPACE         # Do not record an event starting with a space.
+setopt HIST_SAVE_NO_DUPS         # Do not write a duplicate event to the history file.
+setopt INC_APPEND_HISTORY        # Do not share history files across sessions.
 
 SAVEHIST=65535
 HISTFILE=~/.zsh_history
@@ -94,6 +101,7 @@ fi
 
 if [[ -o interactive ]]; then
   # Use modern completion system
+  fpath+=("$HOME/.config/dotfiles_shell/autoload")
   autoload -Uz compinit
   compinit
 
@@ -141,7 +149,68 @@ getSourceLocation () { getSourceLocations | fzf || return; }
 setSourceLocation () { cd "$(getSourceLocations | fzf)" || return; }
 pushSourceLocation () { pushd "$(getSourceLocations | fzf)" || return; }
 
+# Set TTY to prevent error: Inappropriate ioctl for device
+GPG_TTY=$(tty)
+export GPG_TTY
+
+autoload zkbd
+
+autoload -z edit-command-line
+zle -N edit-command-line
+bindkey "^X^E" edit-command-line
+
 alias esl=editSourceLocation
 alias gsl=getSourceLocation
 alias ssl=setSourceLocation
 alias psl=pushSourceLocation
+
+# >>> mamba initialize >>>
+# !! Contents within this block are managed by 'mamba init' !!
+export MAMBA_EXE="/Users/dustin/.local/bin/micromamba";
+export MAMBA_ROOT_PREFIX="/Users/dustin/micromamba";
+__mamba_setup="$("$MAMBA_EXE" shell hook --shell zsh --prefix "$MAMBA_ROOT_PREFIX" 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__mamba_setup"
+else
+    if [ -f "/Users/dustin/micromamba/etc/profile.d/micromamba.sh" ]; then
+        . "/Users/dustin/micromamba/etc/profile.d/micromamba.sh"
+    else
+        export  PATH="/Users/dustin/micromamba/bin:$PATH"  # extra space after export prevents interference from conda init
+    fi
+fi
+unset __mamba_setup
+# <<< mamba initialize <<<
+
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/Users/dustin/mambaforge/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/Users/dustin/mambaforge/etc/profile.d/conda.sh" ]; then
+        . "/Users/dustin/mambaforge/etc/profile.d/conda.sh"
+    else
+        export PATH="/Users/dustin/mambaforge/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+
+if [ -f "/Users/dustin/mambaforge/etc/profile.d/mamba.sh" ]; then
+    . "/Users/dustin/mambaforge/etc/profile.d/mamba.sh"
+fi
+# <<< conda initialize <<<
+
+source <(kubectl completion zsh)
+
+alias aws-profile='export AWS_PROFILE=$(sed -n "s/\[profile \(.*\)\]/\1/gp" ~/.aws/config | fzf)'
+alias ap="aws-profile"
+alias aws-ecr-repo='aws ecr describe-repositories --query "repositories[].repositoryName" --output text | fzf'
+alias aws-ecr-login='aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 497689819904.dkr.ecr.us-east-1.amazonaws.com'
+
+if [ -d "$HOME/.local/bin" ] && [[ ! "$PATH" == *$HOME/.local/bin* ]]; then export PATH="$PATH:$HOME/.local/bin"; fi
+
+if [ -d "$HOME/.config/dotfiles_shell/bin" ] && [[ ! "$PATH" == *$HOME/.config/dotfiles_shell/bin ]]; then
+    export PATH="$PATH:$HOME/.config/dotfiles_shell/bin"
+    . $HOME/.config/dotfiles_shell/autoload/eq.sh
+    . $HOME/.config/dotfiles_shell/autoload/aws.sh
+fi

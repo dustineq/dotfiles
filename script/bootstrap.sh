@@ -109,9 +109,11 @@ l="$dotfiles/dot_gitconfig_os"
 handleLink "$l" "$f"
 
 handleLink "$HOME/.dotfiles" "$dotfiles"
+handleLink "$HOME/.config/dotfiles_shell" "$dotfiles/.config/dotfiles_shell"
 handleLink "$HOME/.config/kitty" "$dotfiles/.config/kitty"
 handleLink "$HOME/.config/nvim" "$dotfiles/.config/nvim"
 handleLink "$HOME/.config/powershell" "$dotfiles/.config/powershell"
+handleLink "$HOME/.config/zsh" "$dotfiles/.config/zsh"
 handleLink "$HOME/.local/share/powershell/Scripts" "$dotfiles/PSScripts"
 
 # Item list to be symlinked.

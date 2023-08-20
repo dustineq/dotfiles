@@ -130,7 +130,7 @@
       "type": "prompt"
     }
   ],
-  "console_title_template": "{{.Folder}}{{if .Root}} :: root{{end}} :: {{.Shell}}",
+  "console_title_template": "{{if .Env.EQ_ENV}} {{.Env.EQ_ENV}} :: {{end}}{{.Folder}}{{if .Root}} :: root{{end}}",
   "final_space": true,
   "version": 2
 }
